@@ -63,9 +63,7 @@ public class VideoProcessing {
         return cuboPixels;
     }
 
-    public static void gravarVideo(byte pixels[][][],
-            String caminho,
-            double fps) {
+    public static void gravarVideo(byte pixels[][][], String caminho, double fps) {
 
         int qFrames = pixels.length;
         int altura = pixels[0].length;
@@ -100,30 +98,65 @@ public class VideoProcessing {
     public static void main(String[] args) {
 
         String caminhoVideo = "dados/video.mp4";
-        String caminhoGravar = "D:\\Download\\video2.mp4";
-        double fps = 24.0; //isso deve mudar se for outro vídeo (avaliar metadados ???)
+        String caminhoGravar = "dados/video3.mp4";
+        double fps = 30.0; //isso deve mudar se for outro vídeo (avaliar metadados ???)
 
         System.out.println("Carregando o vídeo... " + caminhoVideo);
         byte pixels[][][] = carregarVideo(caminhoVideo);
 
         System.out.printf("Frames: %d   Resolução: %d x %d \n",
                 pixels.length, pixels[0][0].length, pixels[0].length);
-         
+
         System.out.println("processamento remove ruído 1");
-        removerSalPimenta(pixels); //voce deve implementar esta funcao
+        byte[][][] pixels_corrigidos = removerSalPimenta(pixels); //voce deve implementar esta funcao
 
         System.out.println("processamento remove ruído 2");
         //removerBorroesTempo(pixels); //voce deve implementar esta funcao
 
         System.out.println("Salvando...  " + caminhoGravar);
-        gravarVideo(pixels, caminhoGravar, fps);
+        gravarVideo(pixels_corrigidos, caminhoGravar, fps);
         System.out.println("Término do processamento");
     }
 
-    private static void removerSalPimenta(byte[][][] pixels) {
-        System.out.println(pixels[0][0][0]);
-        System.out.println(pixels[0][0][0]);
-        
+    private static byte[][][] removerSalPimenta(byte[][][] pixels) {
 
+        int frames = pixels.length;
+        int linhas = pixels[0].length;
+        int colunas = pixels[0][0].length;
+        byte[][][] matrizCorrigida = new byte[frames][linhas][colunas];
+
+        for (int frameCorrigir = 0; frameCorrigir < frames; frameCorrigir++) {
+
+            for (int linha = 1; linha < pixels[frameCorrigir].length - 1; linha++) {
+
+                for (int coluna = 1; coluna < pixels[frameCorrigir][linha].length - 1; coluna++) {
+
+                    int calcular_media = algortimo_media(pixels, frames, linhas, colunas);
+
+                    matrizCorrigida[frames][linha][coluna] = (byte) calcular_media;
+
+                }
+            }
+
+        }
+
+        return matrizCorrigida;
     }
+
+    public static int algortimo_media(byte[][][] pixels, int frame, int linha, int coluna) {
+
+        int soma_dos_valores = 0;
+
+        for (int i = -1; i <= 1; i++) {
+            
+            for (int j = -1; j <= 1; j++) {
+                
+                soma_dos_valores += Byte.toUnsignedInt(pixels[frame][linha+1][coluna+1]);
+                
+            }
+        }
+
+        return soma_dos_valores / 9;
+    }
+
 }
