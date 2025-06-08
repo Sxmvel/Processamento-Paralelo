@@ -108,22 +108,49 @@ public class VideoProcessing {
 
         System.out.printf("Frames: %d   Resolução: %d x %d \n",
                 pixels.length, pixels[0][0].length, pixels[0].length);
-         
+
         System.out.println("processamento remove ruído 1");
         removerSalPimenta(pixels); //voce deve implementar esta funcao
 
         System.out.println("processamento remove ruído 2");
         //removerBorroesTempo(pixels); //voce deve implementar esta funcao
 
-        System.out.println("Salvando...  " + caminhoGravar);
-        gravarVideo(pixels, caminhoGravar, fps);
-        System.out.println("Término do processamento");
+        //System.out.println("Salvando...  " + caminhoGravar);
+        //gravarVideo(pixels, caminhoGravar, fps);
+        //System.out.println("Término do processamento");
     }
 
     private static void removerSalPimenta(byte[][][] pixels) {
-        System.out.println(pixels[0][0][0]);
-        System.out.println(pixels[0][0][0]);
-        
+
+        /*Passo 1 - Criar uma nova matriz que será retornada ao final da execução, lembrando que 
+        não podemos reescrever a matriz antiga, pois a correção deve ser feita a partir da original
+         */
+        int frames = pixels.length;
+        int linhas = pixels[0].length;
+        int colunas = pixels[0][0].length;
+        byte[][][] matrizCorrigida = new byte[frames][linhas][colunas];
+
+        for (int frameCorrigir = 0; frameCorrigir < frames; frameCorrigir++) {
+            //aqui, vamos percorrer por todos os frames a serem corrigidos, e após a correção, enviaremos esse valor a uma nova matriz!
+            for (int linha = 1; linha < pixels[frameCorrigir].length - 1; linha++) {
+                //aqui eu pego a linhas(altura) no frame que estamos corrigindo(ignoro a primeira linha(0) e vou até a penultima)
+                for (int coluna = 1; coluna < pixels[frameCorrigir][linha].length - 1; coluna++) {
+                    
+                    //aqui eu pego a coluna(largura) no frame que estamos corrigindo(ignoro a primeira coluna(0) e vou até a penultima)
+                    /*Primeiro passo, pegar os valores para fazer a média
+                     Segundo, passar esses valores de byte para inteiro
+                     Terceiro, calcular a média
+                     quarto passar para byte o valor final
+                     quinto, adicionar esse valor na nova matriz*/
+                    //Aqui, por fim adicionamos o novo valor a matriz(tem que ser byte)
+                    
+                   
+
+                }
+
+            }
+
+        }
 
     }
 }
