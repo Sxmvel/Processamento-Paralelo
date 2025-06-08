@@ -63,9 +63,7 @@ public class VideoProcessing {
         return cuboPixels;
     }
 
-    public static void gravarVideo(byte pixels[][][],
-            String caminho,
-            double fps) {
+    public static void gravarVideo(byte pixels[][][], String caminho, double fps) {
 
         int qFrames = pixels.length;
         int altura = pixels[0].length;
@@ -100,8 +98,8 @@ public class VideoProcessing {
     public static void main(String[] args) {
 
         String caminhoVideo = "dados/video.mp4";
-        String caminhoGravar = "D:\\Download\\video2.mp4";
-        double fps = 24.0; //isso deve mudar se for outro vídeo (avaliar metadados ???)
+        String caminhoGravar = "dados/video3.mp4";
+        double fps = 30.0; //isso deve mudar se for outro vídeo (avaliar metadados ???)
 
         System.out.println("Carregando o vídeo... " + caminhoVideo);
         byte pixels[][][] = carregarVideo(caminhoVideo);
@@ -110,47 +108,47 @@ public class VideoProcessing {
                 pixels.length, pixels[0][0].length, pixels[0].length);
 
         System.out.println("processamento remove ruído 1");
-        removerSalPimenta(pixels); //voce deve implementar esta funcao
+        byte[][][] correcao_pixels = removerSalPimenta(pixels); // você deve implementar esta função
 
         System.out.println("processamento remove ruído 2");
-        //removerBorroesTempo(pixels); //voce deve implementar esta funcao
+        // removerBorroesTempo(pixels); // você deve implementar esta função
 
-        //System.out.println("Salvando...  " + caminhoGravar);
-        //gravarVideo(pixels, caminhoGravar, fps);
-        //System.out.println("Término do processamento");
+        System.out.println("Salvando...  " + caminhoGravar);
+        gravarVideo(correcao_pixels, caminhoGravar, fps);
+        System.out.println("Término do processamento");
     }
 
-    private static void removerSalPimenta(byte[][][] pixels) {
+    private static byte[][][] removerSalPimenta(byte[][][] pixels) {
 
-        /*Passo 1 - Criar uma nova matriz que será retornada ao final da execução, lembrando que 
-        não podemos reescrever a matriz antiga, pois a correção deve ser feita a partir da original
-         */
         int frames = pixels.length;
         int linhas = pixels[0].length;
         int colunas = pixels[0][0].length;
         byte[][][] matrizCorrigida = new byte[frames][linhas][colunas];
 
         for (int frameCorrigir = 0; frameCorrigir < frames; frameCorrigir++) {
-            //aqui, vamos percorrer por todos os frames a serem corrigidos, e após a correção, enviaremos esse valor a uma nova matriz!
-            for (int linha = 1; linha < pixels[frameCorrigir].length - 1; linha++) {
-                //aqui eu pego a linhas(altura) no frame que estamos corrigindo(ignoro a primeira linha(0) e vou até a penultima)
-                for (int coluna = 1; coluna < pixels[frameCorrigir][linha].length - 1; coluna++) {
-                    
-                    //aqui eu pego a coluna(largura) no frame que estamos corrigindo(ignoro a primeira coluna(0) e vou até a penultima)
-                    /*Primeiro passo, pegar os valores para fazer a média
-                     Segundo, passar esses valores de byte para inteiro
-                     Terceiro, calcular a média
-                     quarto passar para byte o valor final
-                     quinto, adicionar esse valor na nova matriz*/
-                    //Aqui, por fim adicionamos o novo valor a matriz(tem que ser byte)
-                    
-                   
+            for (int linha = 1; linha < linhas - 1; linha++) {
+                for (int coluna = 1; coluna < colunas - 1; coluna++) {
 
+                    int media = algortimo_media(pixels, frameCorrigir, linha, coluna);
+                    matrizCorrigida[frameCorrigir][linha][coluna] = (byte) media;
                 }
-
             }
-
         }
 
+        return matrizCorrigida;
     }
+
+    public static int algortimo_media(byte[][][] pixels, int frame, int linha, int coluna) {
+        int soma_dos_valores = 0;
+
+        for (int i = -1; i <= 1; i++) {
+            for (int j = -1; j <= 1; j++) {
+                soma_dos_valores += Byte.toUnsignedInt(pixels[frame][linha + i][coluna + j]);
+            }
+        }
+
+        return soma_dos_valores / 9;
+    }
+
+    // Assuma que carregarVideo e gravarVideo estão implementados corretamente
 }
