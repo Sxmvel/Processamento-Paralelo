@@ -98,23 +98,25 @@ public class VideoProcessing {
     public static void main(String[] args) {
 
         String caminhoVideo = "dados/video.mp4";
-        String caminhoGravar = "dados/video3.mp4";
+        String caminhoGravar = "dados/video_corrigido.mp4";
         double fps = 30.0; //isso deve mudar se for outro vídeo (avaliar metadados ???)
 
         System.out.println("Carregando o vídeo... " + caminhoVideo);
         byte pixels[][][] = carregarVideo(caminhoVideo);
 
-        System.out.printf("Frames: %d   Resolução: %d x %d \n",
-                pixels.length, pixels[0][0].length, pixels[0].length);
+        System.out.printf("Frames: %d   Resolução: %d x %d \n", pixels.length, pixels[0][0].length, pixels[0].length);
 
         System.out.println("processamento remove ruído 1");
+
+        removerSalPimenta(pixels);
         byte[][][] correcao_pixels = removerSalPimenta(pixels); // você deve implementar esta função
 
-        System.out.println("processamento remove ruído 2");
+        //System.out.println("processamento remove ruído 2");
         // removerBorroesTempo(pixels); // você deve implementar esta função
-
         System.out.println("Salvando...  " + caminhoGravar);
+
         gravarVideo(correcao_pixels, caminhoGravar, fps);
+
         System.out.println("Término do processamento");
     }
 
@@ -127,14 +129,13 @@ public class VideoProcessing {
 
         for (int frameCorrigir = 0; frameCorrigir < frames; frameCorrigir++) {
             for (int linha = 1; linha < linhas - 1; linha++) {
-                for (int coluna = 1; coluna < colunas - 1; coluna++) {
 
+                for (int coluna = 1; coluna < colunas - 1; coluna++) {
                     int media = algortimo_media(pixels, frameCorrigir, linha, coluna);
                     matrizCorrigida[frameCorrigir][linha][coluna] = (byte) media;
                 }
             }
         }
-
         return matrizCorrigida;
     }
 
@@ -146,9 +147,7 @@ public class VideoProcessing {
                 soma_dos_valores += Byte.toUnsignedInt(pixels[frame][linha + i][coluna + j]);
             }
         }
-
         return soma_dos_valores / 9;
     }
 
-    // Assuma que carregarVideo e gravarVideo estão implementados corretamente
 }
