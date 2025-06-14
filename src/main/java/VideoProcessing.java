@@ -98,8 +98,8 @@ public class VideoProcessing {
     public static void main(String[] args) {
 
         String caminhoVideo = "dados/video.mp4";
-        String caminhoGravar = "dados/video_corrigido.mp4";
-        double fps = 30.0; //isso deve mudar se for outro vídeo (avaliar metadados ???)
+        String caminhoGravar = "dados/video_corrigido_3.mp4";
+        double fps = 24.0; //isso deve mudar se for outro vídeo (avaliar metadados ???)
 
         System.out.println("Carregando o vídeo... " + caminhoVideo);
         byte pixels[][][] = carregarVideo(caminhoVideo);
@@ -108,7 +108,7 @@ public class VideoProcessing {
 
         System.out.println("processamento remove ruído 1");
 
-        removerSalPimenta(pixels);
+        //removerSalPimenta(pixels);
         byte[][][] correcao_pixels = removerSalPimenta(pixels); // você deve implementar esta função
 
         //System.out.println("processamento remove ruído 2");
@@ -127,12 +127,15 @@ public class VideoProcessing {
         int colunas = pixels[0][0].length;
         byte[][][] matrizCorrigida = new byte[frames][linhas][colunas];
 
-        for (int frameCorrigir = 0; frameCorrigir < frames; frameCorrigir++) {
-            for (int linha = 1; linha < linhas - 1; linha++) {
+        for (int i = 0; i < 1; i++) {
 
-                for (int coluna = 1; coluna < colunas - 1; coluna++) {
-                    int media = algortimo_media(pixels, frameCorrigir, linha, coluna);
-                    matrizCorrigida[frameCorrigir][linha][coluna] = (byte) media;
+            for (int frameCorrigir = 0; frameCorrigir < frames; frameCorrigir++) {
+                for (int linha = 1; linha < linhas - 1; linha++) {
+
+                    for (int coluna = 1; coluna < colunas - 1; coluna++) {
+                        int media = algortimo_media(pixels, frameCorrigir, linha, coluna);
+                        matrizCorrigida[frameCorrigir][linha][coluna] = (byte) media;
+                    }
                 }
             }
         }
